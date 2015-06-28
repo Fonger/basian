@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta property="og:title" content="八仙樂園塵暴事件傷患查詢 by Fonger">
+	<meta property="og:description" content="利用開放資料做的簡易傷患查詢">
+    <title>八仙樂園塵暴事件傷患查詢 by Fonger</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <style>
+        .pagination {
+            margin: 0 0;
+        }
+        .pagination>li>a, .pagination>li>span {
+            padding: 6px 11px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+    <script type="text/javascript">
+    var app = angular.module('app', ['ui.bootstrap']);
+
+    var w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        x = w.innerWidth || e.clientWidth || g.clientWidth,
+        y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+    app.controller('patientController', ['$scope', '$http', function($scope, $http) {
+        $scope.search = '';
+        $scope.currentPage = 1;
+        $scope.maxSize = Math.floor(x / 41.57) - 3;
+        $scope.pageSize = Math.floor((y - 110 - 40) / 40 - 1);
+        $scope.totalPage = 0;
+        $http.get('https://tonyq.org/kptaipei/api-20150628.php')
+            .success(function(data) {
+                $scope.lastmodify = data.lastmodify;
+                $scope.source = data.source;
+                $scope.patients = data.data;
+                $scope.cols = Object.keys(data.data[0]);
+                $scope.totalPage = Math.ceil(data.data.length / $scope.pageSize);
+            })
+            .error(function(data) {
+                alert('發生錯誤!');
+            })
+        $scope.ignoreCenterName = function() {
+            if ($scope.search.length > 1)
+                return $scope.search[0] + '○' + $scope.search.substr(2, $scope.search.length - 2);
+            else
+                return $scope.search;
+        }
+    }]);
+    app.filter('startFrom', function() {
+        return function(input, start) {
+            start = +start; //parse to int
+            if (input === undefined)
+                return input;
+            return input.slice(start);
+        };
+    });
+    </script>
+</head>
+
+<body ng-controller="patientController">
+    <div class="container">
+    	<h3>八仙塵暴傷患查詢 by <a href="https://www.facebook.com/mr.fonger">Fonger</a></h3>
+        <div class="row">
+            <input type="text" class="form-control" placeholder="搜尋姓名..." ng-model="search" /> 最後更新：{{ lastmodify }} - 第 {{ currentPage}} 頁 / 共 {{ totalPage }} 頁
+        </div>
+        <div class="row">
+            <div class="table-responsive" id="tableList">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th ng-repeat="col in cols">{{col}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="patient in filteredPatients = (patients | filter:ignoreCenterName()) | startFrom:(currentPage-1)*pageSize | limitTo:pageSize">
+                            <td ng-repeat="col in cols">
+                                {{ patient[col] || '無資料'}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+        	<center>
+	        	<pagination ng-init="currentPage = 1" ng-show="filteredPatients.length > pageSize" total-items="filteredPatients.length" items-per-page="{{pageSize}}" max-size="{{maxSize}}" ng-model="currentPage" boundary-links="true" rotate="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+	    	</center>
+        </div>
+
+    </div>
+</body>
+
+</html>

@@ -51,33 +51,38 @@
         </div>
 
         <div class="row">
-        	<center>
-	        	<pagination ng-init="currentPage = 1" ng-show="filteredPatients.length > pageSize" total-items="filteredPatients.length" items-per-page="{{pageSize}}" max-size="{{maxSize}}" ng-model="currentPage" boundary-links="true" rotate="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+        	<center ng-if="loaded">
+	        	<pagination ng-show="$parent.filteredPatients.length > $parent.pageSize" total-items="$parent.filteredPatients.length" items-per-page="{{$parent.pageSize}}" max-size="{{$parent.maxSize}}" ng-model="$parent.currentPage" boundary-links="true" rotate="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
 	    	</center>
         </div>
-
     </div>
     <a href="https://github.com/Fonger/basian" class="hidden-xs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
     <script type="text/javascript">
+
     var app = angular.module('app', ['ui.bootstrap']);
 
-    var w = window,
-        d = document,
-        e = d.documentElement,
-        g = d.getElementsByTagName('body')[0],
-        x = w.innerWidth || e.clientWidth || g.clientWidth,
-        y = w.innerHeight|| e.clientHeight|| g.clientHeight;
 
-    app.controller('patientController', ['$scope', '$http', function($scope, $http) {
+    app.controller('patientController', ['$scope', '$http','$timeout', function($scope, $http, $timeout) {
+        var self = this;
+        $scope.loaded = false;
         $scope.search = '';
         $scope.currentPage = 1;
-        $scope.maxSize = Math.floor(x / 41.57) - 3;
-        $scope.pageSize = Math.floor((y - 110 - 40) / 40 - 1);
         $scope.totalPage = 0;
-        $http.get('https://tonyq.org/kptaipei/api-20150628.php')
-            .success(function(data) {
+        var json = $http.get('https://tonyq.org/kptaipei/api-20150628.php');
+        $timeout(function(){
+            var w = window,
+                d = document,
+                e = d.documentElement,
+                g = d.getElementsByTagName('body')[0],
+                x = w.innerWidth || e.clientWidth || g.clientWidth,
+                y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+            console.log(w.innerWidth);
+            $scope.maxSize = Math.floor(x / 41.57) - 3;
+            $scope.pageSize = Math.floor((y - 110 - 40) / 40 - 1);
+
+            json.success(function(data) {
                 $scope.lastmodify = data.lastmodify;
                 $scope.source = data.source;
                 $scope.patients = data.data;
@@ -87,7 +92,9 @@
             })
             .error(function(data) {
                 alert('發生錯誤!');
-            })
+            });
+        }, 100);
+
         $scope.ignoreCenterName = function() {
             if ($scope.search.length > 1)
                 return $scope.search[0] + '○' + $scope.search.substr(2, $scope.search.length - 2);

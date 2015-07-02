@@ -6,27 +6,48 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta property="og:title" content="八仙樂園塵爆事件傷患查詢">
-	<meta property="og:description" content="利用開放資料做的簡易傷患查詢">
+    <meta property="og:title" content="八仙樂園塵爆事件傷患查詢">
+    <meta property="og:description" content="利用開放資料做的簡易傷患查詢">
     <title>八仙樂園塵爆事件傷患查詢 by Fonger</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
     <style>
-        .pagination {
-            margin: 0 0;
-        }
-        .pagination>li>a, .pagination>li>span {
-            padding: 6px 11px;
-        }
-        [ng-cloak] {
-          display: none !important;
-        }
+    .pagination {
+        margin: 0 0;
+    }
+
+    .pagination>li>a,
+    .pagination>li>span {
+        padding: 6px 11px;
+    }
+
+    [ng-cloak] {
+        display: none !important;
+    }
     </style>
 </head>
 
 <body ng-controller="patientController">
+    <div id="fb-root"></div>
+
+    <script type="text/ng-template" id="notify.html">
+        <div class="modal-header">
+            <h3 class="modal-title">關心傷患與醫療人員之餘..</h3>
+        </div>
+        <div class="modal-body" style="text-align:center;">
+                <div class="fb-post" data-href="https://www.facebook.com/tuanyikang/posts/399868416885123" data-width="100%">
+                    <div class="fb-xfbml-parse-ignore">
+                        <blockquote cite="https://www.facebook.com/tuanyikang/posts/399868416885123">
+                            <p>&#x5075;&#x8fa6;&#x516b;&#x4ed9;&#x6848;&#x7684;&#x6aa2;&#x5bdf;&#x5b98;&#xff0c;&#x4e14;&#x807d;&#x6211;&#x9032;&#x4e00;&#x8a00;&#x3002;&#x4e3b;&#x8fa6;&#x6d3b;&#x52d5;&#x7684;&#x516c;&#x53f8;&#x548c;&#x8001;&#x95c6;&#x6709;&#x8cac;&#x4efb;&#xff1b;&#x63d0;&#x4f9b;&#x5834;&#x5730;&#x7684;&#x516b;&#x4ed9;&#x6a02;&#x5712;&#x548c;&#x8001;&#x95c6;&#x6709;&#x8cac;&#x4efb;&#x3002;&#x53ef;&#x662f;&#xff0c;&#x73fe;&#x5834;&#x9084;&#x6709;&#x4e00;&#x4e9b;&#x53d7;&#x96c7;&#x65bc;&#x696d;&#x8005;&#x7684;&#x5de5;&#x8b80;&#x751f;&#xff1b;&#x4ed6;&#x5011;&#x548c;&#x53d7;&#x5bb3;&#x8005;&#x5c0d;&#x9019;&#x500b;&#x6d3b;&#x52d5;&#x7684;&#x5371;&#x96aa;&#x6027;&#xff0c;&#x53ef;&#x80fd;&#x662f;&#x4e00;&#x6a23;&#x61f5;&#x61c2;&#x3002;&#x9019;&#x5e7e;&#x5929;&#x4ed6;&#x5011;&#x7684;&#x81ea;&#x8cac;&#x8207;&#x58d3;&#x529b;&#xff0c;&#x6050;&#x975e;&#x4f60;&#x6211;&#x6240;&#x80fd;&#x60f3;&#x50cf;&#x3002;&#x9019;&#x4e9b;&#x5e74;&#x8f15;&#x4eba;&#x4e5f;&#x4e0d;&#x904e;&#x5728;&#x6691;&#x5047;&#x6253;&#x6253;&#x5de5;&#xff0c;&#x5c31;&#x76ee;&#x64ca;&#x4e86;&#x9019;&#x767e;&#x5e74;&#x6158;&#x5287;&#xff1b;&#x672a;&#x4f86;&#x53ef;&#x80fd;&#x9084;&#x8981;&#x9762;&#x5c0d;&#x53f8;&#x6cd5;&#x8a34;&#x7a76;&#x3002;&#x9019;&#x88e1;&#x9762;&#x6c92;&#x6709;&#x6211;&#x7684;&#x89aa;&#x53cb;&#xff0c;&#x4f46;&#x60f3;&#x5230;&#x4ed6;&#x5011;&#x7684;&#x8655;&#x5883;&#xff0c;&#x89ba;&#x5f97;&#x81ea;&#x5df1;&#x61c9;&#x8a72;&#x70ba;&#x9019;&#x4e9b;&#x5e74;&#x8f15;&#x4eba;&#x8b1b;&#x8b1b;&#x8a71;&#x3002;</p>Posted by <a href="https://www.facebook.com/tuanyikang">段宜康</a> on&nbsp;<a href="https://www.facebook.com/tuanyikang/posts/399868416885123">Monday, June 29, 2015</a></blockquote>
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">前往傷患查詢系統</button>
+        </div>
+    </script>
     <div class="container">
-    	<h3>八仙塵爆傷患查詢 by <a href="https://www.facebook.com/mr.fonger">Fonger</a></h3>
+        <h3>八仙塵爆傷患查詢 by <a href="https://www.facebook.com/mr.fonger">Fonger</a></h3>
         <div class="row" ng-cloak>
             <input type="text" class="form-control" placeholder="搜尋姓名..." ng-model="search" /> 最後更新：{{ lastmodify }} - 第 {{ currentPage}} 頁 / 共 {{ totalPage }} 頁
         </div>
@@ -49,51 +70,73 @@
                 </table>
             </div>
         </div>
-
         <div class="row">
-        	<center ng-if="loaded">
-	        	<pagination ng-show="$parent.filteredPatients.length > $parent.pageSize" total-items="$parent.filteredPatients.length" items-per-page="{{$parent.pageSize}}" max-size="{{$parent.maxSize}}" ng-model="$parent.currentPage" boundary-links="true" rotate="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
-	    	</center>
+            <center ng-if="loaded">
+                <pagination ng-show="$parent.filteredPatients.length > $parent.pageSize" total-items="$parent.filteredPatients.length" items-per-page="{{$parent.pageSize}}" max-size="{{$parent.maxSize}}" ng-model="$parent.currentPage" boundary-links="true" rotate="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+            </center>
         </div>
     </div>
     <a href="https://github.com/Fonger/basian" class="hidden-xs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
     <script type="text/javascript">
-
     var app = angular.module('app', ['ui.bootstrap']);
 
 
-    app.controller('patientController', ['$scope', '$http','$timeout', function($scope, $http, $timeout) {
+    app.controller('patientController', ['$scope', '$http', '$timeout', '$modal', function($scope, $http, $timeout, $modal) {
         var self = this;
         $scope.loaded = false;
         $scope.search = '';
         $scope.currentPage = 1;
         $scope.totalPage = 0;
         var json = $http.get('https://tonyq.org/kptaipei/api-20150628.php');
-        $timeout(function(){
+        $timeout(function() {
             var w = window,
                 d = document,
                 e = d.documentElement,
                 g = d.getElementsByTagName('body')[0],
                 x = w.innerWidth || e.clientWidth || g.clientWidth,
-                y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+                y = w.innerHeight || e.clientHeight || g.clientHeight;
             console.log(w.innerWidth);
             $scope.maxSize = Math.floor(x / 41.57) - 3;
             $scope.pageSize = Math.floor((y - 110 - 40) / 40 - 1);
 
             json.success(function(data) {
-                $scope.lastmodify = data.lastmodify;
-                $scope.source = data.source;
-                $scope.patients = data.data;
-                $scope.cols = Object.keys(data.data[0]);
-                $scope.totalPage = Math.ceil(data.data.length / $scope.pageSize);
-                $scope.loaded = true;
-            })
-            .error(function(data) {
-                alert('發生錯誤!');
-            });
+                    $scope.lastmodify = data.lastmodify;
+                    $scope.source = data.source;
+                    $scope.patients = data.data;
+                    $scope.cols = Object.keys(data.data[0]);
+                    $scope.totalPage = Math.ceil(data.data.length / $scope.pageSize);
+                    $scope.loaded = true;
+
+                    (function(d, s, id) {
+                        var js, fjs = d.getElementsByTagName(s)[0];
+                        if (d.getElementById(id)) return;
+                        js = d.createElement(s);
+                        js.id = id;
+                        js.src = "https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.3&appId=1587671761512645";
+                        fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));
+
+                    var modalInstance = $modal.open({
+                        animation: true,
+                        templateUrl: 'notify.html',
+                        size: 'large',
+                        controller: ['$scope', function($scope) {
+                            $scope.ok = function() {
+                                modalInstance.close();
+                            }
+                        }]
+                    });
+
+                })
+                .error(function(data) {
+                    alert('發生錯誤!');
+                });
         }, 100);
+
+
 
         $scope.ignoreCenterName = function() {
             if ($scope.search.length > 1)
